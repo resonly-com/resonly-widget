@@ -12,70 +12,75 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       line-height: 1.6;
-      color: #333;
+      color: #1f2937;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       padding: 40px 20px;
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       padding: 40px;
     }
 
     h1 {
-      color: #667eea;
-      margin-bottom: 10px;
+      color: #7c3aed;
+      margin-bottom: 8px;
       font-size: 2.5em;
     }
 
     .subtitle {
-      color: #666;
-      margin-bottom: 30px;
+      color: #6b7280;
+      margin-bottom: 40px;
       font-size: 1.1em;
     }
 
     .section {
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     h2 {
-      color: #333;
-      margin-bottom: 15px;
+      color: #111827;
+      margin-bottom: 16px;
       font-size: 1.5em;
-      border-bottom: 2px solid #667eea;
-      padding-bottom: 5px;
+      border-bottom: 2px solid #7c3aed;
+      padding-bottom: 8px;
     }
 
-    .demo-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 15px;
+    p {
+      margin-bottom: 12px;
+      color: #4b5563;
+    }
+
+    .demo-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
     }
 
     button {
-      background: #667eea;
+      background: #7c3aed;
       color: white;
       border: none;
       padding: 12px 24px;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
-      transition: all 0.2s;
+      font-size: 15px;
       font-weight: 500;
+      transition: all 0.2s;
+      text-align: left;
     }
 
     button:hover {
-      background: #5568d3;
+      background: #6d28d9;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
     }
 
     button:active {
@@ -83,233 +88,303 @@
     }
 
     button.secondary {
-      background: #6c757d;
+      background: #6b7280;
     }
 
     button.secondary:hover {
-      background: #5a6268;
+      background: #4b5563;
     }
 
     button.danger {
-      background: #dc3545;
+      background: #ef4444;
     }
 
     button.danger:hover {
-      background: #c82333;
+      background: #dc2626;
     }
 
     code {
-      background: #f5f5f5;
+      background: #f3f4f6;
       padding: 2px 6px;
-      border-radius: 3px;
+      border-radius: 4px;
       font-family: 'Monaco', 'Courier New', monospace;
       font-size: 0.9em;
+      color: #7c3aed;
     }
 
     pre {
-      background: #f5f5f5;
-      padding: 15px;
-      border-radius: 6px;
+      background: #1f2937;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 8px;
       overflow-x: auto;
-      margin-top: 10px;
+      margin-top: 12px;
+      font-size: 0.9em;
     }
 
     pre code {
       background: none;
+      color: #e5e7eb;
       padding: 0;
     }
 
     .info-box {
-      background: #e7f3ff;
-      border-left: 4px solid #2196F3;
-      padding: 15px;
-      margin-top: 15px;
+      background: #ede9fe;
+      border-left: 4px solid #7c3aed;
+      padding: 16px;
+      margin-top: 16px;
       border-radius: 4px;
     }
 
-    .info-box p {
-      margin: 5px 0;
+    .info-box strong {
+      color: #6d28d9;
     }
 
-    #inline-demo {
-      margin-top: 20px;
-      padding: 20px;
-      background: #f9f9f9;
+    .storage-info {
+      background: #f3f4f6;
+      padding: 16px;
       border-radius: 8px;
-      border: 2px dashed #ddd;
-    }
-
-    .event-log {
-      background: #1e1e1e;
-      color: #d4d4d4;
-      padding: 15px;
-      border-radius: 6px;
-      max-height: 200px;
-      overflow-y: auto;
+      margin-top: 16px;
       font-family: 'Monaco', 'Courier New', monospace;
       font-size: 0.85em;
-      margin-top: 10px;
+      max-height: 200px;
+      overflow-y: auto;
     }
 
-    .event-log-entry {
-      padding: 4px 0;
-      border-bottom: 1px solid #333;
-    }
-
-    .event-log-entry:last-child {
-      border-bottom: none;
-    }
-
-    .event-time {
-      color: #6a9955;
-    }
-
-    .event-name {
-      color: #4ec9b0;
-      font-weight: bold;
+    .badge {
+      display: inline-block;
+      background: #7c3aed;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75em;
+      font-weight: 600;
+      margin-left: 8px;
+      vertical-align: middle;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Resonly Widget Demo</h1>
-    <p class="subtitle">Test the embeddable widget loader</p>
+    <h1>Resonly Widget Demo <span class="badge">v1.0</span></h1>
+    <p class="subtitle">Self-contained embeddable feedback widget with no network calls</p>
 
     <div class="section">
-      <h2>Auto-Initialization (Button Mode)</h2>
-      <p>The widget is auto-initialized via script tag with <code>data-*</code> attributes.</p>
+      <h2>1. Default Initialization</h2>
+      <p>The widget auto-initializes on page load with default settings.</p>
       <div class="info-box">
-        <p><strong>Mode:</strong> button</p>
-        <p><strong>Position:</strong> bottom-right</p>
-        <p><strong>Theme:</strong> light</p>
+        <strong>Position:</strong> bottom-left<br>
+        <strong>Accent Color:</strong> #7c3aed (purple)<br>
+        <strong>Storage:</strong> localStorage only
+      </div>
+      <p style="margin-top: 16px;">
+        Look at the <strong>bottom-left corner</strong> to see the widget with 3 buttons: Feedback, Issue, Idea.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>2. Custom Question</h2>
+      <p>Initialize with a custom default question for all types:</p>
+      <div class="demo-grid">
+        <button onclick="customQuestion()">
+          Init with "What would you like to tell us?"
+        </button>
       </div>
     </div>
 
     <div class="section">
-      <h2>API Controls</h2>
-      <p>Use these buttons to control the widget programmatically:</p>
-      <div class="demo-buttons">
-        <button onclick="openWidget()">Open Widget</button>
-        <button onclick="closeWidget()">Close Widget</button>
-        <button class="secondary" onclick="checkVersion()">Check Version</button>
-        <button class="danger" onclick="destroyWidget()">Destroy Widget</button>
-        <button class="secondary" onclick="reinitWidget()">Re-initialize</button>
+      <h2>3. Per-Type Questions</h2>
+      <p>Different questions for each feedback type:</p>
+      <div class="demo-grid">
+        <button onclick="perTypeQuestions()">
+          Init with custom questions per type
+        </button>
       </div>
-    </div>
-
-    <div class="section">
-      <h2>Event Log</h2>
-      <p>Custom events dispatched by the widget:</p>
-      <div class="event-log" id="event-log">
-        <div class="event-log-entry">Waiting for events...</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>Manual Initialization Example</h2>
-      <p>You can also initialize the widget manually via JavaScript:</p>
-      <pre><code>window.ResonlyWidget.init({
-  projectId: 'demo_project_123',
-  host: 'https://api.example.com',
-  mode: 'button',
-  position: 'bottom-right',
-  theme: 'light'
+      <pre><code>ResonlyWidget.init({
+  questionsByType: {
+    feedback: "How can we improve?",
+    issue: "What's broken?",
+    idea: "What should we build next?"
+  }
 });</code></pre>
     </div>
 
     <div class="section">
-      <h2>Inline Mode Demo</h2>
-      <p>Widget can also be embedded inline (future implementation):</p>
-      <div id="inline-demo">
-        <p style="color: #666; font-style: italic;">Inline mode placeholder - would render widget here</p>
+      <h2>4. Programmatic Open with Prefill</h2>
+      <p>Open the widget programmatically with a preselected type and custom content:</p>
+      <div class="demo-grid">
+        <button onclick="openWithPrefill('feedback')">
+          Open Feedback with prefill
+        </button>
+        <button onclick="openWithPrefill('issue')">
+          Open Issue with custom question
+        </button>
+        <button onclick="openWithPrefill('idea')">
+          Open Idea with prefilled text
+        </button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5. Custom Position & Color</h2>
+      <p>Change widget position and accent color:</p>
+      <div class="demo-grid">
+        <button onclick="changePosition('bottom-right')">
+          Move to bottom-right
+        </button>
+        <button onclick="changePosition('bottom-left')">
+          Move to bottom-left
+        </button>
+        <button onclick="changeColor('#10b981')" style="background: #10b981;">
+          Green theme
+        </button>
+        <button onclick="changeColor('#f59e0b')" style="background: #f59e0b;">
+          Orange theme
+        </button>
+        <button onclick="changeColor('#7c3aed')">
+          Reset to purple
+        </button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>6. LocalStorage Data</h2>
+      <p>All submissions are saved to <code>localStorage</code> only (no network calls):</p>
+      <div class="demo-grid">
+        <button class="secondary" onclick="showSubmissions()">
+          Show Saved Submissions
+        </button>
+        <button class="danger" onclick="resetData()">
+          Reset LocalStorage
+        </button>
+      </div>
+      <div class="storage-info" id="storage-info">
+        Click "Show Saved Submissions" to view data
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>7. Destroy Widget</h2>
+      <p>Remove the widget completely from the page:</p>
+      <div class="demo-grid">
+        <button class="danger" onclick="destroyWidget()">
+          Destroy Widget
+        </button>
+        <button class="secondary" onclick="recreateWidget()">
+          Recreate Widget
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Widget Script - Auto-initialization -->
-  <script type="module" src="/src/widget-loader.ts"
-    data-project="demo_project_123"
-    data-host="https://api.example.com"
-    data-mode="button"
-    data-position="bottom-right"
-    data-theme="light"
-  ></script>
+  <!-- Include the widget script (built from TypeScript) -->
+  <script type="module" src="/src/widget-loader.ts"></script>
 
-  <!-- Demo Controls -->
-  <script>
-    // Event logging
-    const eventLog = document.getElementById('event-log');
-    let eventCount = 0;
+  <!-- Demo controls -->
+  <script type="module">
+    // Wait for the widget to be available
+    await new Promise(resolve => setTimeout(resolve, 100));
 
-    function logEvent(eventName, detail = null) {
-      if (eventCount === 0) {
-        eventLog.innerHTML = '';
-      }
-      eventCount++;
-
-      const time = new Date().toLocaleTimeString();
-      const entry = document.createElement('div');
-      entry.className = 'event-log-entry';
-      entry.innerHTML = `<span class="event-time">[${time}]</span> <span class="event-name">${eventName}</span>`;
-
-      if (detail) {
-        entry.innerHTML += ` <span style="color: #ce9178;">${JSON.stringify(detail)}</span>`;
-      }
-
-      eventLog.appendChild(entry);
-      eventLog.scrollTop = eventLog.scrollHeight;
-    }
-
-    // Listen to widget events
-    document.addEventListener('resonly:ready', (e) => {
-      logEvent('resonly:ready', { projectId: e.detail.config.projectId });
+    // Initialize the widget with default config
+    window.ResonlyWidget.init({
+      projectId: 'demo_project_123',
+      host: 'https://api.example.com',
+      position: 'bottom-left',
+      accentColor: '#7c3aed'
     });
 
-    document.addEventListener('resonly:open', () => {
-      logEvent('resonly:open');
-    });
-
-    document.addEventListener('resonly:close', () => {
-      logEvent('resonly:close');
-    });
-
-    // API controls
-    function openWidget() {
-      window.ResonlyWidget.open();
-    }
-
-    function closeWidget() {
-      window.ResonlyWidget.close();
-    }
-
-    function checkVersion() {
-      const version = window.ResonlyWidget.version;
-      alert(`Widget version: ${version}`);
-      logEvent('version-check', { version });
-    }
-
-    function destroyWidget() {
-      if (confirm('This will destroy the widget. Continue?')) {
-        window.ResonlyWidget.destroy();
-        logEvent('widget-destroyed');
-      }
-    }
-
-    function reinitWidget() {
+    // Make functions globally accessible
+    window.customQuestion = async function() {
+      await window.ResonlyWidget.destroy();
       window.ResonlyWidget.init({
-        projectId: 'demo_project_reinit',
+        projectId: 'demo_project_123',
         host: 'https://api.example.com',
-        mode: 'button',
-        position: 'bottom-left',
-        theme: 'light'
+        question: "What would you like to tell us?"
       });
-      logEvent('widget-reinitialized');
-    }
+    };
 
-    // Log when page loads
-    window.addEventListener('load', () => {
-      logEvent('page-loaded');
-    });
+    window.perTypeQuestions = async function() {
+      await window.ResonlyWidget.destroy();
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com',
+        questionsByType: {
+          feedback: "How can we improve?",
+          issue: "What's broken?",
+          idea: "What should we build next?"
+        }
+      });
+    };
+
+    window.openWithPrefill = function(type) {
+      const options = {
+        feedback: {
+          question: "We'd love your feedback!",
+          text: "I wish this had..."
+        },
+        issue: {
+          question: "Where did you get stuck?",
+          text: ""
+        },
+        idea: {
+          question: "Share your brilliant idea!",
+          text: "What if we could..."
+        }
+      };
+
+      window.ResonlyWidget.open(type, options[type]);
+    };
+
+    window.changePosition = async function(position) {
+      await window.ResonlyWidget.destroy();
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com',
+        position
+      });
+    };
+
+    window.changeColor = async function(color) {
+      await window.ResonlyWidget.destroy();
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com',
+        accentColor: color
+      });
+    };
+
+    window.showSubmissions = function() {
+      const submissions = window.ResonlyWidget._getSubmissions();
+      const storageInfo = document.getElementById('storage-info');
+
+      if (submissions.length === 0) {
+        storageInfo.textContent = 'No submissions yet. Try submitting some feedback!';
+      } else {
+        storageInfo.textContent = JSON.stringify(submissions, null, 2);
+      }
+    };
+
+    window.resetData = function() {
+      if (confirm('Clear all saved submissions from localStorage?')) {
+        window.ResonlyWidget._clearSubmissions();
+        document.getElementById('storage-info').textContent = 'LocalStorage cleared!';
+        setTimeout(() => {
+          document.getElementById('storage-info').textContent = 'Click "Show Saved Submissions" to view data';
+        }, 2000);
+      }
+    };
+
+    window.destroyWidget = async function() {
+      await window.ResonlyWidget.destroy();
+      alert('Widget destroyed! Click "Recreate Widget" to bring it back.');
+    };
+
+    window.recreateWidget = function() {
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com'
+      });
+    };
   </script>
 </body>
 </html>

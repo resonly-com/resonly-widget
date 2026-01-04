@@ -5,11 +5,11 @@ A lightweight, framework-agnostic embeddable widget for collecting feature reque
 ## Features
 
 - Framework-agnostic (works with any website)
-- Tiny footprint (loader only)
+- Tiny footprint with optimized loading
 - Shadow DOM for style encapsulation
 - Auto-initialization from script tag
 - Manual initialization via JavaScript API
-- Lazy-loading of widget UI
+- Dynamic UI rendering with code splitting
 - TypeScript support
 - CSP-friendly (no inline scripts)
 
@@ -201,8 +201,8 @@ The build produces:
 src/
 ├── types.ts           # TypeScript type definitions
 ├── widget-loader.ts   # Main loader and auto-init logic
-├── resonly-widget.ts  # Web Component definition
-└── widget-app.ts      # Lazy-loaded widget UI (stub)
+├── widget-shell.ts    # Web Component shell (lightweight wrapper)
+└── widget-ui.ts       # Full widget UI implementation (dynamically loaded)
 ```
 
 ## Browser Support

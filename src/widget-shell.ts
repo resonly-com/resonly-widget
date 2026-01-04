@@ -35,6 +35,9 @@ export class ResonlyWidgetElement extends HTMLElement {
   connectedCallback() {
     this.updateConfigFromAttributes();
 
+    // Load the UI immediately (not lazy)
+    this.loadAndMountApp();
+
     // Dispatch ready event
     if (this.config?.projectId && this.config?.host) {
       this.dispatchEvent(
@@ -66,7 +69,10 @@ export class ResonlyWidgetElement extends HTMLElement {
     const position = (this.getAttribute('position') || 'bottom-right') as WidgetConfig['position'];
     const theme = (this.getAttribute('theme') || 'light') as WidgetConfig['theme'];
 
-    this.config = {
+    // Get the full config stored by the loader
+    const fullConfig = (this as any).__resonlyConfig as WidgetConfig | undefined;
+
+    this.config = fullConfig || {
       projectId,
       host,
       mode,
@@ -131,34 +137,44 @@ export class ResonlyWidgetElement extends HTMLElement {
   /**
    * Open the widget (lazy-loads UI on first call)
    */
-  async open() {
-    if (this.isOpen) return;
-
-    this.isOpen = true;
-
-    // Dispatch open event
-    this.dispatchEvent(
-      new CustomEvent('resonly:open', {
-        bubbles: true,
-        composed: true,
-      })
-    );
-
+  async open(type?: 'feedback' | 'issue' | 'idea', overrides?: any) {
     // Lazy-load the widget app on first open
     if (!this.appMountPromise) {
       this.appMountPromise = this.loadAndMountApp();
     }
 
     await this.appMountPromise;
+
+    // Call the UI's open method
+    const uiModule = await import('./widget-ui');
+    uiModule.open(type, overrides);
+
+    if (!this.isOpen) {
+      this.isOpen = true;
+
+      // Dispatch open event
+      this.dispatchEvent(
+        new CustomEvent('resonly:open', {
+          bubbles: true,
+          composed: true,
+        })
+      );
+    }
   }
 
   /**
    * Close the widget
    */
-  close() {
+  async close() {
     if (!this.isOpen) return;
 
     this.isOpen = false;
+
+    // Call the UI's close method if loaded
+    if (this.appMountPromise) {
+      const uiModule = await import('./widget-ui');
+      uiModule.close();
+    }
 
     // Dispatch close event
     this.dispatchEvent(
@@ -170,21 +186,21 @@ export class ResonlyWidgetElement extends HTMLElement {
   }
 
   /**
-   * Lazy-load and mount the widget app
+   * Lazy-load and mount the widget UI
    */
   private async loadAndMountApp() {
     try {
-      // Dynamic import of the actual widget UI
-      const { mount } = await import('./widget-app');
+      // Dynamic import of the actual widget UI implementation
+      const { mount } = await import('./widget-ui');
 
-      // Mount the app into shadow root
+      // Mount the UI into shadow root
       if (this.config) {
         await mount(this._shadowRoot, this.config);
       }
 
-      console.log('[ResonlyWidget] App mounted successfully');
+      console.log('[ResonlyWidget] UI mounted successfully');
     } catch (error) {
-      console.error('[ResonlyWidget] Failed to load widget app:', error);
+      console.error('[ResonlyWidget] Failed to load widget UI:', error);
       throw error;
     }
   }
@@ -192,8 +208,8 @@ export class ResonlyWidgetElement extends HTMLElement {
   /**
    * Destroy the widget
    */
-  destroy() {
-    this.close();
+  async destroy() {
+    await this.close();
     this._shadowRoot.innerHTML = '';
     this.config = null;
     this.appMountPromise = null;

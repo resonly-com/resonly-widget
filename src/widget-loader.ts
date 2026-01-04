@@ -1,5 +1,6 @@
-import type { WidgetConfig, WidgetConfigInput, ResonlyWidgetAPI } from './types';
-import { ResonlyWidgetElement } from './resonly-widget';
+import type { WidgetConfig, WidgetConfigInput, ResonlyWidgetAPI, FormOptions } from './types';
+import { ResonlyWidgetElement } from './widget-shell';
+import * as widgetUI from './widget-ui';
 
 /**
  * Widget Loader
@@ -37,13 +38,26 @@ function findWidgetScript(): HTMLScriptElement | null {
  * Extract configuration from script data attributes
  */
 function extractConfigFromScript(script: HTMLScriptElement): Partial<WidgetConfig> {
-  return {
+  const config: Partial<WidgetConfig> = {
     projectId: script.dataset.project || '',
     host: script.dataset.host || '',
     mode: (script.dataset.mode as 'button' | 'inline') || 'button',
     position: (script.dataset.position as WidgetConfig['position']) || 'bottom-right',
     theme: (script.dataset.theme as WidgetConfig['theme']) || 'light',
   };
+
+  // Optional customizations
+  if (script.dataset.accentColor) {
+    config.accentColor = script.dataset.accentColor;
+  }
+  if (script.dataset.question) {
+    config.question = script.dataset.question;
+  }
+  if (script.dataset.defaultType) {
+    config.defaultType = script.dataset.defaultType as 'feedback' | 'issue' | 'idea';
+  }
+
+  return config;
 }
 
 /**
@@ -83,9 +97,16 @@ function createWidgetRoot(): HTMLDivElement {
  * Create and inject the widget element
  */
 function createWidgetElement(config: WidgetConfig): ResonlyWidgetElement {
+  // Ensure the custom element is registered
+  if (!customElements.get('resonly-widget')) {
+    console.error('[ResonlyWidget] Custom element not registered yet');
+    // Try to register it manually
+    customElements.define('resonly-widget', ResonlyWidgetElement);
+  }
+
   const widget = document.createElement('resonly-widget') as ResonlyWidgetElement;
 
-  // Set attributes
+  // Set required attributes
   widget.setAttribute('project-id', config.projectId);
   widget.setAttribute('host', config.host);
   widget.setAttribute('mode', config.mode || 'button');
@@ -96,13 +117,16 @@ function createWidgetElement(config: WidgetConfig): ResonlyWidgetElement {
   widget.setAttribute('data-mode', config.mode || 'button');
   widget.setAttribute('data-position', config.position || 'bottom-right');
 
+  // Store full config on the element for the widget-app to access
+  (widget as any).__resonlyConfig = config;
+
   return widget;
 }
 
 /**
  * Initialize the widget
  */
-function initWidget(configOverride?: WidgetConfigInput): void {
+async function initWidget(configOverride?: WidgetConfigInput): Promise<void> {
   // Prevent double initialization
   if (isInitialized) {
     console.warn('[ResonlyWidget] Widget already initialized');
@@ -148,6 +172,9 @@ function initWidget(configOverride?: WidgetConfigInput): void {
   // Inject widget into root
   root.appendChild(widgetElement);
 
+  // Wait for custom element to be fully defined and upgraded
+  await customElements.whenDefined('resonly-widget');
+
   isInitialized = true;
 
   console.log('[ResonlyWidget] Initialized successfully', {
@@ -159,37 +186,47 @@ function initWidget(configOverride?: WidgetConfigInput): void {
 /**
  * Open the widget
  */
-function openWidget(): void {
+async function openWidget(type?: 'feedback' | 'issue' | 'idea', overrides?: FormOptions): Promise<void> {
   if (!widgetElement) {
     console.warn('[ResonlyWidget] Widget not initialized. Call init() first.');
     return;
   }
 
-  widgetElement.open();
+  if (typeof (widgetElement as any).open === 'function') {
+    await (widgetElement as any).open(type, overrides);
+  } else {
+    console.error('[ResonlyWidget] Widget element does not have open method');
+  }
 }
 
 /**
  * Close the widget
  */
-function closeWidget(): void {
+async function closeWidget(): Promise<void> {
   if (!widgetElement) {
     console.warn('[ResonlyWidget] Widget not initialized');
     return;
   }
 
-  widgetElement.close();
+  if (typeof (widgetElement as any).close === 'function') {
+    await (widgetElement as any).close();
+  } else {
+    console.error('[ResonlyWidget] Widget element does not have close method');
+  }
 }
 
 /**
  * Destroy the widget and clean up
  */
-function destroyWidget(): void {
+async function destroyWidget(): Promise<void> {
   if (!widgetElement) {
     return;
   }
 
   // Destroy the element
-  widgetElement.destroy();
+  if (typeof widgetElement.destroy === 'function') {
+    await widgetElement.destroy();
+  }
 
   // Remove from DOM
   const root = document.getElementById(WIDGET_ROOT_ID);
@@ -221,6 +258,8 @@ const ResonlyWidgetAPI: ResonlyWidgetAPI = {
   close: closeWidget,
   destroy: destroyWidget,
   version: WIDGET_VERSION,
+  _getSubmissions: widgetUI.getAllSubmissions,
+  _clearSubmissions: widgetUI.clearSubmissions,
 };
 
 // Expose global API
