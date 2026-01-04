@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resonly Widget Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.5em;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 5px;
+    }
+
+    .demo-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: #6c757d;
+    }
+
+    button.secondary:hover {
+      background: #5a6268;
+    }
+
+    button.danger {
+      background: #dc3545;
+    }
+
+    button.danger:hover {
+      background: #c82333;
+    }
+
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 4px;
+    }
+
+    .info-box p {
+      margin: 5px 0;
+    }
+
+    #inline-demo {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 2px dashed #ddd;
+    }
+
+    .event-log {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.85em;
+      margin-top: 10px;
+    }
+
+    .event-log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #333;
+    }
+
+    .event-log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .event-time {
+      color: #6a9955;
+    }
+
+    .event-name {
+      color: #4ec9b0;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Resonly Widget Demo</h1>
+    <p class="subtitle">Test the embeddable widget loader</p>
+
+    <div class="section">
+      <h2>Auto-Initialization (Button Mode)</h2>
+      <p>The widget is auto-initialized via script tag with <code>data-*</code> attributes.</p>
+      <div class="info-box">
+        <p><strong>Mode:</strong> button</p>
+        <p><strong>Position:</strong> bottom-right</p>
+        <p><strong>Theme:</strong> light</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>API Controls</h2>
+      <p>Use these buttons to control the widget programmatically:</p>
+      <div class="demo-buttons">
+        <button onclick="openWidget()">Open Widget</button>
+        <button onclick="closeWidget()">Close Widget</button>
+        <button class="secondary" onclick="checkVersion()">Check Version</button>
+        <button class="danger" onclick="destroyWidget()">Destroy Widget</button>
+        <button class="secondary" onclick="reinitWidget()">Re-initialize</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Event Log</h2>
+      <p>Custom events dispatched by the widget:</p>
+      <div class="event-log" id="event-log">
+        <div class="event-log-entry">Waiting for events...</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Manual Initialization Example</h2>
+      <p>You can also initialize the widget manually via JavaScript:</p>
+      <pre><code>window.ResonlyWidget.init({
+  projectId: 'demo_project_123',
+  host: 'https://api.example.com',
+  mode: 'button',
+  position: 'bottom-right',
+  theme: 'light'
+});</code></pre>
+    </div>
+
+    <div class="section">
+      <h2>Inline Mode Demo</h2>
+      <p>Widget can also be embedded inline (future implementation):</p>
+      <div id="inline-demo">
+        <p style="color: #666; font-style: italic;">Inline mode placeholder - would render widget here</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget Script - Auto-initialization -->
+  <script type="module" src="/src/widget-loader.ts"
+    data-project="demo_project_123"
+    data-host="https://api.example.com"
+    data-mode="button"
+    data-position="bottom-right"
+    data-theme="light"
+  ></script>
+
+  <!-- Demo Controls -->
+  <script>
+    // Event logging
+    const eventLog = document.getElementById('event-log');
+    let eventCount = 0;
+
+    function logEvent(eventName, detail = null) {
+      if (eventCount === 0) {
+        eventLog.innerHTML = '';
+      }
+      eventCount++;
+
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'event-log-entry';
+      entry.innerHTML = `<span class="event-time">[${time}]</span> <span class="event-name">${eventName}</span>`;
+
+      if (detail) {
+        entry.innerHTML += ` <span style="color: #ce9178;">${JSON.stringify(detail)}</span>`;
+      }
+
+      eventLog.appendChild(entry);
+      eventLog.scrollTop = eventLog.scrollHeight;
+    }
+
+    // Listen to widget events
+    document.addEventListener('resonly:ready', (e) => {
+      logEvent('resonly:ready', { projectId: e.detail.config.projectId });
+    });
+
+    document.addEventListener('resonly:open', () => {
+      logEvent('resonly:open');
+    });
+
+    document.addEventListener('resonly:close', () => {
+      logEvent('resonly:close');
+    });
+
+    // API controls
+    function openWidget() {
+      window.ResonlyWidget.open();
+    }
+
+    function closeWidget() {
+      window.ResonlyWidget.close();
+    }
+
+    function checkVersion() {
+      const version = window.ResonlyWidget.version;
+      alert(`Widget version: ${version}`);
+      logEvent('version-check', { version });
+    }
+
+    function destroyWidget() {
+      if (confirm('This will destroy the widget. Continue?')) {
+        window.ResonlyWidget.destroy();
+        logEvent('widget-destroyed');
+      }
+    }
+
+    function reinitWidget() {
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_reinit',
+        host: 'https://api.example.com',
+        mode: 'button',
+        position: 'bottom-left',
+        theme: 'light'
+      });
+      logEvent('widget-reinitialized');
+    }
+
+    // Log when page loads
+    window.addEventListener('load', () => {
+      logEvent('page-loaded');
+    });
+  </script>
+</body>
+</html>

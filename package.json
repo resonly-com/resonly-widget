@@ -1,0 +1,42 @@
+{
+  "name": "@resonly/widget",
+  "version": "0.1.0",
+  "description": "Lightweight, framework-agnostic embeddable widget loader for feature requests",
+  "type": "module",
+  "main": "./dist/widget.mjs",
+  "module": "./dist/widget.mjs",
+  "types": "./dist/types.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/widget.mjs",
+      "require": "./dist/widget.js",
+      "types": "./dist/types.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "widget",
+    "embeddable",
+    "feature-request",
+    "feedback",
+    "web-component",
+    "loader"
+  ],
+  "author": "Resonly",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
