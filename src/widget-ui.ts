@@ -227,7 +227,6 @@ class WidgetApp {
 
         .panel-header {
           padding: 20px;
-          border-bottom: 1px solid #e5e7eb;
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
@@ -270,13 +269,13 @@ class WidgetApp {
         }
 
         .panel-body {
-          padding: 20px;
+          padding: 0 20px;
           flex: 1;
           overflow-y: auto;
         }
 
         .form-group {
-          margin-bottom: 16px;
+          margin: 0;
         }
 
         .form-label {
@@ -317,7 +316,6 @@ class WidgetApp {
 
         .panel-footer {
           padding: 16px 20px;
-          border-top: 1px solid #e5e7eb;
           display: flex;
           justify-content: flex-end;
         }
@@ -413,12 +411,12 @@ class WidgetApp {
         <div class="panel-body">
           <form class="feedback-form">
             <div class="form-group">
-              <label class="form-label" for="feedback-text">Your message</label>
               <textarea
                 class="form-textarea"
                 id="feedback-text"
                 placeholder="Type your message here..."
                 required
+                aria-label="Your message"
               ></textarea>
               <div class="form-error">Please enter your message</div>
             </div>
