@@ -137,7 +137,7 @@ export class ResonlyWidgetElement extends HTMLElement {
   /**
    * Open the widget (lazy-loads UI on first call)
    */
-  async open(type?: 'feedback' | 'issue' | 'idea', overrides?: any) {
+  async open(type?: string, overrides?: any) {
     // Lazy-load the widget app on first open
     if (!this.appMountPromise) {
       this.appMountPromise = this.loadAndMountApp();

@@ -1,4 +1,4 @@
-import type { WidgetConfig } from './types';
+import type { WidgetConfig, ButtonConfig, FormStyle } from './types';
 
 /**
  * Widget App - Self-contained feedback widget UI
@@ -12,7 +12,7 @@ const STORAGE_KEY = 'resonly_widget_submissions_v1';
  */
 interface Submission {
   id: string;
-  type: 'feedback' | 'issue' | 'idea';
+  type: string;
   text: string;
   createdAt: string;
   pageUrl: string;
@@ -22,14 +22,11 @@ interface Submission {
  * Widget configuration extended with custom options
  */
 interface WidgetAppConfig extends WidgetConfig {
-  questionsByType?: {
-    feedback?: string;
-    issue?: string;
-    idea?: string;
-  };
   question?: string;
   accentColor?: string;
   zIndex?: number;
+  buttons?: ButtonConfig[];
+  formStyle?: FormStyle;
 }
 
 /**
@@ -63,7 +60,7 @@ function getSubmissions(): Submission[] {
 /**
  * Save submission to localStorage
  */
-function saveSubmission(type: 'feedback' | 'issue' | 'idea', text: string): Submission {
+function saveSubmission(type: string, text: string): Submission {
   const submission: Submission = {
     id: generateId(),
     type,
@@ -108,23 +105,43 @@ class WidgetApp {
   private shadowRoot: ShadowRoot;
   private config: WidgetAppConfig;
   private isOpen = false;
-  private currentType: 'feedback' | 'issue' | 'idea' | null = null;
+  private currentType: string | null = null;
   private currentOverrides: FormOptions | null = null;
   private keydownHandler: ((e: KeyboardEvent) => void) | null = null;
 
   constructor(shadowRoot: ShadowRoot, config: WidgetAppConfig) {
     this.shadowRoot = shadowRoot;
+
+    // Default buttons if none provided
+    const defaultButtons: ButtonConfig[] = [
+      { type: 'feedback', label: 'Feedback', icon: '💬', question: 'What feedback do you have?' },
+      { type: 'issue', label: 'Issue', icon: '🐛', question: 'What issue did you encounter?' },
+      { type: 'idea', label: 'Idea', icon: '💡', question: 'What idea do you have?' }
+    ];
+
     this.config = {
       ...config,
       question: config.question || 'Share your thoughts',
-      questionsByType: config.questionsByType || {
-        feedback: 'What feedback do you have?',
-        issue: 'What issue did you encounter?',
-        idea: 'What idea do you have?'
-      },
       accentColor: config.accentColor || '#7c3aed',
-      zIndex: config.zIndex || 999999
+      zIndex: config.zIndex || 999999,
+      buttons: config.buttons || defaultButtons,
+      formStyle: config.formStyle || {}
     };
+  }
+
+  /**
+   * Helper to convert CSS object to CSS string
+   */
+  private cssObjectToString(cssObj: any): string {
+    if (!cssObj) return '';
+    return Object.entries(cssObj)
+      .filter(([_, value]) => value !== undefined)
+      .map(([key, value]) => {
+        // Convert camelCase to kebab-case
+        const kebabKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+        return `${kebabKey}: ${value};`;
+      })
+      .join('\n          ');
   }
 
   /**
@@ -134,6 +151,25 @@ class WidgetApp {
     const position = this.config.position || 'bottom-left';
     const accentColor = this.config.accentColor!;
     const zIndex = this.config.zIndex!;
+    const buttons = this.config.buttons!;
+    const formStyle = this.config.formStyle || {};
+
+    // Generate button-specific styles
+    const buttonStyles = buttons.map((btn, index) => {
+      const style = btn.style || {};
+      return `
+        .widget-btn[data-type="${btn.type}"] {
+          ${style.backgroundColor ? `background: ${style.backgroundColor};` : `background: var(--accent-color);`}
+          ${style.color ? `color: ${style.color};` : `color: white;`}
+          ${style.borderRadius ? `border-radius: ${style.borderRadius};` : ''}
+          ${style.padding ? `padding: ${style.padding};` : ''}
+          ${style.fontSize ? `font-size: ${style.fontSize};` : ''}
+          ${style.fontWeight ? `font-weight: ${style.fontWeight};` : ''}
+          ${style.boxShadow ? `box-shadow: ${style.boxShadow};` : ''}
+          ${Object.entries(style).filter(([key]) => !['backgroundColor', 'color', 'borderRadius', 'padding', 'fontSize', 'fontWeight', 'boxShadow'].includes(key)).map(([key, value]) => `${key}: ${value};`).join('\n          ')}
+        }
+      `;
+    }).join('\n');
 
     this.shadowRoot.innerHTML = `
       <style>
@@ -161,21 +197,21 @@ class WidgetApp {
         .widget-buttons {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: 2px;
         }
 
         .widget-btn {
           background: var(--accent-color);
           color: white;
           border: none;
-          padding: 12px 20px;
-          border-radius: 8px;
+          padding: 8px 14px;
+          border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
           font-weight: 500;
           transition: all 0.2s;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-          min-width: 120px;
+          min-width: 110px;
           text-align: left;
         }
 
@@ -189,6 +225,8 @@ class WidgetApp {
           transform: translateY(0);
         }
 
+        ${buttonStyles}
+
         .panel-backdrop {
           display: none;
           position: fixed;
@@ -199,6 +237,7 @@ class WidgetApp {
           background: rgba(0, 0, 0, 0.4);
           z-index: calc(var(--z-index) + 1);
           animation: fadeIn 0.2s;
+          ${this.cssObjectToString(formStyle.backdrop)}
         }
 
         .panel-backdrop.open {
@@ -219,6 +258,7 @@ class WidgetApp {
           display: none;
           flex-direction: column;
           animation: slideUp 0.3s;
+          ${this.cssObjectToString(formStyle.panel)}
         }
 
         .panel.open {
@@ -226,10 +266,11 @@ class WidgetApp {
         }
 
         .panel-header {
-          padding: 20px;
+          padding: 12px 14px;
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
+          ${this.cssObjectToString(formStyle.panelHeader)}
         }
 
         .panel-title {
@@ -237,6 +278,7 @@ class WidgetApp {
           font-size: 16px;
           font-weight: 600;
           color: #111827;
+          ${this.cssObjectToString(formStyle.panelTitle)}
         }
 
 
@@ -251,6 +293,7 @@ class WidgetApp {
           transition: color 0.2s;
           flex-shrink: 0;
           margin-left: 12px;
+          ${this.cssObjectToString(formStyle.closeButton)}
         }
 
         .close-btn:hover {
@@ -258,32 +301,37 @@ class WidgetApp {
         }
 
         .panel-body {
-          padding: 0 20px;
+          padding: 0 14px;
           flex: 1;
           overflow-y: auto;
+          ${this.cssObjectToString(formStyle.panelBody)}
         }
 
         .form-group {
           margin: 0;
+          ${this.cssObjectToString(formStyle.formGroup)}
         }
 
         .form-label {
           display: block;
-          margin-bottom: 8px;
+          margin-bottom: 4px;
           font-weight: 500;
           color: #374151;
+          ${this.cssObjectToString(formStyle.formLabel)}
         }
 
         .form-textarea {
           width: 100%;
-          min-height: 120px;
-          padding: 12px;
+          min-height: 100px;
+          padding: 10px;
           border: 1px solid #d1d5db;
           border-radius: 6px;
+          background: white;
           font-family: inherit;
           font-size: 14px;
           resize: vertical;
           transition: border-color 0.2s;
+          ${this.cssObjectToString(formStyle.textarea)}
         }
 
         .form-textarea:focus {
@@ -297,6 +345,7 @@ class WidgetApp {
           font-size: 12px;
           margin-top: 4px;
           display: none;
+          ${this.cssObjectToString(formStyle.errorMessage)}
         }
 
         .form-error.visible {
@@ -304,21 +353,23 @@ class WidgetApp {
         }
 
         .panel-footer {
-          padding: 16px 20px;
+          padding: 10px 14px;
           display: flex;
           justify-content: flex-end;
+          ${this.cssObjectToString(formStyle.panelFooter)}
         }
 
         .submit-btn {
           background: var(--accent-color);
           color: white;
           border: none;
-          padding: 10px 24px;
+          padding: 8px 20px;
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
           font-weight: 500;
           transition: all 0.2s;
+          ${this.cssObjectToString(formStyle.submitButton)}
         }
 
         .submit-btn:hover {
@@ -340,12 +391,13 @@ class WidgetApp {
           bottom: 80px;
           background: #10b981;
           color: white;
-          padding: 12px 20px;
-          border-radius: 8px;
+          padding: 8px 16px;
+          border-radius: 6px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           z-index: calc(var(--z-index) + 3);
           display: none;
           animation: slideUp 0.3s;
+          ${this.cssObjectToString(formStyle.toast)}
         }
 
         .toast.visible {
@@ -375,15 +427,11 @@ class WidgetApp {
 
       <div class="widget-container">
         <div class="widget-buttons">
-          <button class="widget-btn" data-type="feedback" aria-label="Share feedback">
-            💬 Feedback
-          </button>
-          <button class="widget-btn" data-type="issue" aria-label="Report an issue">
-            🐛 Issue
-          </button>
-          <button class="widget-btn" data-type="idea" aria-label="Share an idea">
-            💡 Idea
-          </button>
+          ${buttons.map(btn => `
+            <button class="widget-btn" data-type="${btn.type}" aria-label="${btn.label}">
+              ${btn.icon ? btn.icon + ' ' : ''}${btn.label}
+            </button>
+          `).join('')}
         </div>
       </div>
 
@@ -429,7 +477,7 @@ class WidgetApp {
     const buttons = this.shadowRoot.querySelectorAll('.widget-btn');
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
-        const type = (btn as HTMLElement).dataset.type as 'feedback' | 'issue' | 'idea';
+        const type = (btn as HTMLElement).dataset.type as string;
         this.open(type);
       });
     });
@@ -472,7 +520,7 @@ class WidgetApp {
   /**
    * Open the panel with a specific type
    */
-  open(type: 'feedback' | 'issue' | 'idea', overrides: FormOptions = {}): void {
+  open(type: string, overrides: FormOptions = {}): void {
     this.currentType = type;
     this.currentOverrides = overrides;
     this.isOpen = true;
@@ -483,14 +531,22 @@ class WidgetApp {
     const textarea = this.shadowRoot.querySelector('.form-textarea') as HTMLTextAreaElement;
     const error = this.shadowRoot.querySelector('.form-error');
 
-    // Set question
+    // Set question - priority: overrides > button config > default question
     let question = overrides.question;
-    if (!question && this.config.questionsByType && this.config.questionsByType[type]) {
-      question = this.config.questionsByType[type];
+
+    if (!question) {
+      // Find the button config for this type and use its question
+      const buttonConfig = this.config.buttons?.find(btn => btn.type === type);
+      if (buttonConfig?.question) {
+        question = buttonConfig.question;
+      }
     }
+
+    // Fallback to default question if no specific question found
     if (!question) {
       question = this.config.question;
     }
+
     if (title) title.textContent = question || 'Share your thoughts';
 
     // Set prefill text
@@ -603,7 +659,7 @@ export function unmount(shadowRoot: ShadowRoot): void {
 /**
  * Open the widget programmatically
  */
-export function open(type?: 'feedback' | 'issue' | 'idea', overrides?: FormOptions): void {
+export function open(type?: string, overrides?: FormOptions): void {
   if (!appInstance) {
     console.warn('[ResonlyWidget:App] Widget not mounted yet');
     return;

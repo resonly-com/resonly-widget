@@ -201,11 +201,20 @@
         </button>
       </div>
       <pre><code>ResonlyWidget.init({
-  questionsByType: {
-    feedback: "How can we improve?",
-    issue: "What's broken?",
-    idea: "What should we build next?"
-  }
+  buttons: [
+    {
+      type: 'feedback',
+      label: 'Feedback',
+      icon: '💬',
+      question: 'How can we improve?'
+    },
+    {
+      type: 'issue',
+      label: 'Issue',
+      icon: '🐛',
+      question: "What's broken?"
+    }
+  ]
 });</code></pre>
     </div>
 
@@ -264,7 +273,39 @@
     </div>
 
     <div class="section">
-      <h2>7. Destroy Widget</h2>
+      <h2>7. Custom Buttons & Styles</h2>
+      <p>Configure custom buttons with their own labels, icons, and styles:</p>
+      <div class="demo-grid">
+        <button onclick="customButtons()">
+          Use Custom Buttons (Bug Report + Feature Request)
+        </button>
+        <button onclick="customFormStyles()">
+          Apply Custom Form Styles
+        </button>
+        <button onclick="resetToDefaults()">
+          Reset to Default Config
+        </button>
+      </div>
+      <pre><code>// Configure buttons
+buttons: [{
+  type: 'bug',
+  label: 'Report Bug',
+  icon: '🔥',
+  question: 'Describe the bug',
+  style: { backgroundColor: '#ef4444' }
+}],
+
+// Configure every form element
+formStyle: {
+  panel: { background: '#f3f4f6', borderRadius: '20px' },
+  panelTitle: { fontSize: '20px', color: '#7c3aed' },
+  textarea: { minHeight: '150px', fontSize: '16px' },
+  submitButton: { padding: '12px 32px', background: '#10b981' }
+}</code></pre>
+    </div>
+
+    <div class="section">
+      <h2>8. Destroy Widget</h2>
       <p>Remove the widget completely from the page:</p>
       <div class="demo-grid">
         <button class="danger" onclick="destroyWidget()">
@@ -285,12 +326,41 @@
     // Wait for the widget to be available
     await new Promise(resolve => setTimeout(resolve, 100));
 
-    // Initialize the widget with default config
+    // Initialize the widget with custom button configuration
     window.ResonlyWidget.init({
       projectId: 'demo_project_123',
       host: 'https://api.example.com',
       position: 'bottom-left',
-      accentColor: '#7c3aed'
+      accentColor: '#7c3aed',
+      buttons: [
+        {
+          type: 'feedback',
+          label: 'Feedback',
+          icon: '💬',
+          question: 'What feedback do you have?',
+          style: {
+            backgroundColor: '#7c3aed'
+          }
+        },
+        {
+          type: 'issue',
+          label: 'Issue',
+          icon: '🐛',
+          question: 'What issue did you encounter?',
+          style: {
+            backgroundColor: '#ef4444'
+          }
+        },
+        {
+          type: 'idea',
+          label: 'Idea',
+          icon: '💡',
+          question: 'What idea do you have?',
+          style: {
+            backgroundColor: '#10b981'
+          }
+        }
+      ]
     });
 
     // Make functions globally accessible
@@ -308,11 +378,26 @@
       window.ResonlyWidget.init({
         projectId: 'demo_project_123',
         host: 'https://api.example.com',
-        questionsByType: {
-          feedback: "How can we improve?",
-          issue: "What's broken?",
-          idea: "What should we build next?"
-        }
+        buttons: [
+          {
+            type: 'feedback',
+            label: 'Feedback',
+            icon: '💬',
+            question: 'How can we improve?'
+          },
+          {
+            type: 'issue',
+            label: 'Issue',
+            icon: '🐛',
+            question: "What's broken?"
+          },
+          {
+            type: 'idea',
+            label: 'Idea',
+            icon: '💡',
+            question: 'What should we build next?'
+          }
+        ]
       });
     };
 
@@ -383,6 +468,115 @@
       window.ResonlyWidget.init({
         projectId: 'demo_project_123',
         host: 'https://api.example.com'
+      });
+    };
+
+    window.customButtons = async function() {
+      await window.ResonlyWidget.destroy();
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com',
+        buttons: [
+          {
+            type: 'bug',
+            label: 'Report Bug',
+            icon: '🔥',
+            question: 'Describe the bug you encountered',
+            style: {
+              backgroundColor: '#ef4444',
+              color: 'white'
+            }
+          },
+          {
+            type: 'feature',
+            label: 'Request Feature',
+            icon: '✨',
+            question: 'What feature would you like to see?',
+            style: {
+              backgroundColor: '#3b82f6',
+              color: 'white'
+            }
+          },
+          {
+            type: 'question',
+            label: 'Ask Question',
+            icon: '❓',
+            question: 'What would you like to know?',
+            style: {
+              backgroundColor: '#f59e0b',
+              color: 'white'
+            }
+          }
+        ]
+      });
+    };
+
+    window.customFormStyles = async function() {
+      await window.ResonlyWidget.destroy();
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com',
+        formStyle: {
+          panel: {
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: '20px',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
+            border: '2px solid white'
+          },
+          panelHeader: {
+            padding: '20px',
+            borderBottom: '2px solid rgba(255, 255, 255, 0.3)'
+          },
+          panelTitle: {
+            fontSize: '20px',
+            fontWeight: '700',
+            color: 'white',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          },
+          closeButton: {
+            color: 'white',
+            fontSize: '24px'
+          },
+          panelBody: {
+            padding: '0 20px'
+          },
+          textarea: {
+            background: 'rgba(255, 255, 255, 0.95)',
+            border: '2px solid rgba(255, 255, 255, 0.5)',
+            borderRadius: '12px',
+            fontSize: '15px',
+            minHeight: '120px'
+          },
+          panelFooter: {
+            padding: '16px 20px'
+          },
+          submitButton: {
+            background: '#10b981',
+            color: 'white',
+            padding: '12px 32px',
+            borderRadius: '10px',
+            fontSize: '16px',
+            fontWeight: '600',
+            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)'
+          },
+          toast: {
+            background: '#10b981',
+            borderRadius: '12px',
+            padding: '12px 24px',
+            fontSize: '16px',
+            fontWeight: '600'
+          }
+        }
+      });
+    };
+
+    window.resetToDefaults = async function() {
+      await window.ResonlyWidget.destroy();
+      window.ResonlyWidget.init({
+        projectId: 'demo_project_123',
+        host: 'https://api.example.com',
+        position: 'bottom-left',
+        accentColor: '#7c3aed'
       });
     };
   </script>
