@@ -239,17 +239,6 @@ class WidgetApp {
           color: #111827;
         }
 
-        .panel-type {
-          display: inline-block;
-          margin-top: 4px;
-          padding: 2px 8px;
-          background: var(--accent-color);
-          color: white;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 500;
-          text-transform: uppercase;
-        }
 
         .close-btn {
           background: none;
@@ -404,7 +393,6 @@ class WidgetApp {
         <div class="panel-header">
           <div>
             <div class="panel-title"></div>
-            <span class="panel-type"></span>
           </div>
           <button class="close-btn" aria-label="Close">&times;</button>
         </div>
@@ -492,7 +480,6 @@ class WidgetApp {
     const panel = this.shadowRoot.querySelector('.panel');
     const backdrop = this.shadowRoot.querySelector('.panel-backdrop');
     const title = this.shadowRoot.querySelector('.panel-title');
-    const typeLabel = this.shadowRoot.querySelector('.panel-type');
     const textarea = this.shadowRoot.querySelector('.form-textarea') as HTMLTextAreaElement;
     const error = this.shadowRoot.querySelector('.form-error');
 
@@ -505,9 +492,6 @@ class WidgetApp {
       question = this.config.question;
     }
     if (title) title.textContent = question || 'Share your thoughts';
-
-    // Set type label
-    if (typeLabel) typeLabel.textContent = type;
 
     // Set prefill text
     if (textarea) textarea.value = overrides.text || '';
